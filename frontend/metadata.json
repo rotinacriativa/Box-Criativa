@@ -1,0 +1,7 @@
+{
+  "name": "Rotina Criativa PRO",
+  "description": "Uma plataforma CAD inteligente para design de caixas e estruturas para corte a laser, com visualização 3D em tempo real e geração de esquemas 2D otimizados.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
