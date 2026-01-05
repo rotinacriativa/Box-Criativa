@@ -81,31 +81,13 @@ const App: React.FC = () => {
       const data = await response.json();
 
       if (data.svg_path) {
-        const downloadUrl = `http://localhost:8000/${data.svg_path}`;
-        setGeneratedSvgPath(data.svg_path);
+        const fullUrl = `http://localhost:8000/${data.svg_path}`;
+        setGeneratedSvgPath(fullUrl);
 
-        // Fetch the file as a blob to force download and avoid navigation/panel closing
-        try {
-          const fileResponse = await fetch(downloadUrl);
-          const blob = await fileResponse.blob();
-          const blobUrl = window.URL.createObjectURL(blob);
+        // Switch to 2D view to show the result
+        setState(prev => ({ ...prev, activeTab: TabType.SCHEME_2D }));
 
-          const link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = data.svg_path.split('/').pop() || 'box.svg';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-
-          // Clean up the blob URL
-          window.URL.revokeObjectURL(blobUrl);
-
-        } catch (downloadError) {
-          console.error("Erro ao baixar o arquivo:", downloadError);
-          alert("Erro ao baixar o arquivo gerado.");
-        }
-
-        console.log("Download iniciado:", downloadUrl);
+        console.log("SVG pronto para visualização:", fullUrl);
       }
 
     } catch (error) {
@@ -122,7 +104,7 @@ const App: React.FC = () => {
         case TabType.VIEW_3D:
           return <View3D dimensions={state.dimensions} lidOpen={state.lidOpen} />;
         case TabType.SCHEME_2D:
-          return <View2D dimensions={state.dimensions} thickness={state.thickness} />;
+          return <View2D dimensions={state.dimensions} thickness={state.thickness} svgUrl={generatedSvgPath} />;
         case TabType.CODE_XML:
           return <ViewCode dimensions={state.dimensions} thickness={state.thickness} />;
       }
